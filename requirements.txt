@@ -1,0 +1,11 @@
+streamlit>=1.30.0
+python-dotenv
+sentence-transformers
+faiss-cpu
+PyPDF2
+pandas
+pillow
+pdf2image
+pytesseract
+openai
+groq
