@@ -2,10 +2,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import Groq
 from groq import Groq
-
-# Import OpenAI
 from openai import OpenAI
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -18,11 +15,11 @@ LLM_MODEL = os.getenv("LLM_MODEL", "")
 # --------------------------------------------------------
 def get_llm_client():
 
-    # If user selected GPT model
+    # If using GPT, use OpenAI
     if LLM_MODEL.startswith("gpt") and OPENAI_API_KEY:
         return OpenAI(api_key=OPENAI_API_KEY)
 
-    # Groq first
+    # Default → Groq
     if GROQ_API_KEY:
         return Groq(api_key=GROQ_API_KEY)
 
@@ -49,7 +46,7 @@ def generate_answer(client, messages):
 
         resp = client.chat.completions.create(
             model=model_name,
-            messages=messages,
+            messages=messages
         )
         return resp.choices[0].message.content
 
@@ -60,7 +57,7 @@ def generate_answer(client, messages):
 
         resp = client.chat.completions.create(
             model=model_name,
-            messages=messages,
+            messages=messages
         )
         return resp.choices[0].message.content
 
@@ -78,13 +75,13 @@ def transcribe_audio(audio_bytes):
         try:
             out = client.audio.transcriptions.create(
                 file=("audio.wav", audio_bytes, "audio/wav"),
-                model="whisper-large-v3",
+                model="whisper-large-v3"
             )
             return out.text
         except:
             pass
 
-    # OpenAI fallback
+    # OpenAI whisper
     if OPENAI_API_KEY:
         client = OpenAI(api_key=OPENAI_API_KEY)
         try:
@@ -92,7 +89,7 @@ def transcribe_audio(audio_bytes):
             audio_file = BytesIO(audio_bytes)
             out = client.audio.transcriptions.create(
                 file=audio_file,
-                model="whisper-1",
+                model="whisper-1"
             )
             return out.text
         except:
