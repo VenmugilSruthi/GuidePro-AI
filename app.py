@@ -268,11 +268,17 @@ if page == "Chat Assistant":
         st.session_state.chat.append({"role": "user", "content": final_text})
 
         # RAG first
-        if user_msg.endswith("?"):
-            rag_ans = st.session_state.rag.query(final_text)
-            if "No relevant information" not in rag_ans:
-                st.session_state.chat.append({"role": "assistant", "content": rag_ans})
-                st.rerun()
+        # Try RAG only if PDFs exist
+        rag_ans = None
+        if st.session_state.rag.docs:   # RAG ACTIVE ONLY IF PDFs ARE UPLOADED
+            if user_msg.endswith("?"):
+                rag_ans = st.session_state.rag.query(final_text)
+        
+        # If RAG returned a valid answer
+        if rag_ans and isinstance(rag_ans, str) and "No relevant information" not in rag_ans:
+            st.session_state.chat.append({"role": "assistant", "content": rag_ans})
+            st.rerun()
+
 
         # Booking flow
         if start_booking_flow(final_text) or st.session_state.booking_in_progress:
@@ -346,4 +352,5 @@ elif page == "Admin":
 elif page == "About":
     st.header("About GuidePro AI")
     st.write("Your smart AI travelling assistant.")
+
 
