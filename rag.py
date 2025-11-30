@@ -177,7 +177,7 @@ class RAGStore:
         answer_with_llm: if True, call LLM to synthesize a short answer using retrieved context
         """
         if not self.docs or self.embs is None:
-            return "No documents indexed yet. Upload PDFs."
+            return None
 
         # get query embedding
         q_emb = self.model.encode([q], convert_to_numpy=True)[0].astype("float32")
@@ -250,3 +250,4 @@ class RAGStore:
         except Exception as e:
             print("LLM call failed:", e)
             return context_for_llm
+
